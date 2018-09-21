@@ -51,9 +51,15 @@ public class ExplosionManager : MonoBehaviour {
 
             foreach (var c in compArray)
             {
+                // Move the object.
                 Vector3 actualEndPosition = c.endPosition + c.beginPosition;
                 float step = Vector3.Distance(c.beginPosition, actualEndPosition) / explosionDuration * Time.deltaTime;
                 c.transform.position = Vector3.MoveTowards(c.transform.position, actualEndPosition, step);
+
+                // Update the transparency of the description.
+                GameObject cd = c.GetDescription();
+                Color originalColor = cd.GetComponent<Renderer>().material.color;
+                cd.GetComponent<Renderer>().material.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1 - Vector3.Distance(c.transform.position, actualEndPosition) / Vector3.Distance(c.beginPosition, c.endPosition));
             }
 
             if (explosionCounter >= explosionDuration)
@@ -69,9 +75,15 @@ public class ExplosionManager : MonoBehaviour {
 
             foreach (var c in compArray)
             {
+                // Move the object.
                 Vector3 actualEndPosition = c.endPosition + c.beginPosition;
                 float step = Vector3.Distance(c.beginPosition, actualEndPosition) / reverseDuration * Time.deltaTime;
                 c.transform.position = Vector3.MoveTowards(c.transform.position, c.beginPosition, step);
+
+                // Update the transparency of the description.
+                GameObject cd = c.GetDescription();
+                Color originalColor = cd.GetComponent<Renderer>().material.color;
+                cd.GetComponent<Renderer>().material.color = new Color(originalColor.r, originalColor.g, originalColor.b, Vector3.Distance(c.transform.position, actualEndPosition) / Vector3.Distance(c.beginPosition, c.endPosition));
             }
 
             if (reversingCounter >= reverseDuration)
