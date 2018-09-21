@@ -8,10 +8,13 @@ public class ExplosionManager : MonoBehaviour {
     /* The list of explosion components. This will be automatically populated at the start.
      * This is public to allow for debugging.
      */
-    public ExplosionComponent[] components;
+    public ExplosionComponent[] compArray;
 #else
     private ExplosionComponent[] components;
 #endif
+
+    // Similar to compArray, but contains string to allow for quick referencing.
+    private Dictionary<string, ExplosionComponent> compDict;
 
     // The time it takes for the explosion to complete.
     public float explosionDuration;
@@ -29,7 +32,13 @@ public class ExplosionManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        components = GetComponentsInChildren<ExplosionComponent>();
+        compArray = GetComponentsInChildren<ExplosionComponent>();
+        compDict = new Dictionary<string, ExplosionComponent>();
+
+        foreach (ExplosionComponent e in compArray)
+        {
+            compDict.Add(e.name, e);
+        }
 	}
 	
 	// Update is called once per frame
@@ -40,7 +49,7 @@ public class ExplosionManager : MonoBehaviour {
         {
             explosionCounter += Time.deltaTime;
 
-            foreach (var c in components)
+            foreach (var c in compArray)
             {
                 Vector3 actualEndPosition = c.endPosition + c.beginPosition;
                 float step = Vector3.Distance(c.beginPosition, actualEndPosition) / explosionDuration * Time.deltaTime;
@@ -58,7 +67,7 @@ public class ExplosionManager : MonoBehaviour {
         {
             reversingCounter += Time.deltaTime;
 
-            foreach (var c in components)
+            foreach (var c in compArray)
             {
                 Vector3 actualEndPosition = c.endPosition + c.beginPosition;
                 float step = Vector3.Distance(c.beginPosition, actualEndPosition) / reverseDuration * Time.deltaTime;
